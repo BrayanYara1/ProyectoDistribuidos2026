@@ -19,6 +19,10 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/check-availability', authenticateToken, async (req, res) => {
     try {
         const { fecha, hora } = req.query;
+        if (!fecha || !hora) {
+            return res.status(400).json({ mensaje: "La fecha y la hora son obligatorias" });
+        }
+
         const turnoExistente = await Turno.findOne({
             fecha,
             hora,

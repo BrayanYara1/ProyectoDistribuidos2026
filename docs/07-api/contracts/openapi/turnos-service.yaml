@@ -1,0 +1,97 @@
+openapi: 3.0.3
+info:
+  title: Turnos API
+  version: 1.0.0
+  description: Consulta la disponibilidad de horarios para turnos médicos.
+
+servers:
+  - url: http://localhost:10000/api/turnos
+    description: Backend local
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Turnos
+    description: Consulta de disponibilidad de turnos médicos
+
+paths:
+  /check-availability:
+    get:
+      summary: Consultar disponibilidad de un horario
+      operationId: checkTurnoAvailability
+      tags: [Turnos]
+      parameters:
+        - name: fecha
+          in: query
+          required: true
+          description: Fecha solicitada para el turno
+          schema:
+            type: string
+          example: '2026-10-01'
+        - name: hora
+          in: query
+          required: true
+          description: Hora solicitada para el turno
+          schema:
+            type: string
+          example: '10:30'
+      responses:
+        '200':
+          description: Resultado de disponibilidad
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponse'
+              examples:
+                available:
+                  value:
+                    disponible: true
+                occupied:
+                  value:
+                    disponible: false
+        '400':
+          description: Falta la fecha o la hora
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageError'
+              example:
+                mensaje: La fecha y la hora son obligatorias
+        '401':
+          description: No se proporcionó un token o el usuario ya no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageError'
+        '403':
+          description: Token inválido o expirado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageError'
+        '500':
+          description: Error al verificar disponibilidad
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      $ref: './_shared.yaml#/components/securitySchemes/bearerAuth'
+  schemas:
+    AvailabilityResponse:
+      type: object
+      required: [disponible]
+      properties:
+        disponible:
+          type: boolean
+          description: Indica si el horario puede reservarse
+    MessageError:
+      type: object
+      required: [mensaje]
+      properties:
+        mensaje:
+          type: string
