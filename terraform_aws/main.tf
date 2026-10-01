@@ -338,12 +338,12 @@ resource "aws_security_group" "db_sg" {
   name        = "db-security-group"
   vpc_id      = aws_vpc.main_vpc.id
 
-  # Permitir entrada de datos (Puerto 5432 para PostgreSQL) desde cualquier red
+  # Permitir PostgreSQL solo desde las tareas del backend
   ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    cidr_blocks     = ["0.0.0.0/0"] # CAMBIO: Permitir acceso externo para gestión
+    security_groups = [aws_security_group.ecs_sg.id]
   }
 
   egress {
@@ -365,7 +365,7 @@ resource "aws_db_instance" "gestion_turnos_db" {
   password               = var.db_password
   parameter_group_name   = "default.postgres15"
   skip_final_snapshot    = true
-  publicly_accessible    = true # CAMBIO: Permitir acceso desde internet
+  publicly_accessible    = false
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name # Agregamos esto
 }
