@@ -64,6 +64,8 @@ One `.yaml` file per microservice with the OpenAPI 3.0 contract.
 
 **File name:** `service-name.yaml`
 
+Backend turnos contract: [`turnos-service.yaml`](contracts/openapi/turnos-service.yaml).
+
 **Minimum structure for each contract:**
 ```yaml
 openapi: 3.0.3

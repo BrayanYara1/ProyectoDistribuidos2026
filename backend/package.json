@@ -4,7 +4,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "coverageThreshold": {
+      "./routes/turnos.js": {
+        "lines": 80
+      }
+    }
   },
   "devDependencies": {
     "jest": "^29.7.0",

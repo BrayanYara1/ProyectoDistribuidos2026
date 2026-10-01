@@ -23,23 +23,24 @@ app.use(cors());
 app.use(express.json());
 
 // --- CONEXIÓN MONGODB ---
-if (!process.env.MONGODB_URI) {
-    console.error('❌ ERROR: MONGODB_URI no definida en .env');
-    // No salimos del proceso para permitir que Render nos muestre logs
-}
-
 let dbStatus = 'Desconectado';
 
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
+const connectDatabase = async () => {
+    if (!process.env.MONGODB_URI) {
+        console.error('❌ ERROR: MONGODB_URI no definida en .env');
+        return;
+    }
+
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log('✅ MongoDB Atlas conectado a:', mongoose.connection.name);
         dbStatus = 'Conectado a MongoDB Atlas';
-    })
-    .catch(err => {
+    } catch (err) {
         console.error('❌ Error MongoDB:', err.message);
         dbStatus = `Error de Conexión: ${err.message}`;
         // IMPORTANTE: Ya no usamos process.exit(1) para que el servidor no se caiga
-    });
+    }
+};
 
 // --- IMPORTAR RUTAS ---
 const authRoutes = require('./routes/auth');
@@ -69,6 +70,7 @@ app.get('/', (req, res) => {
 app.get('/api/status', (req, res) => res.json({ status: 'online', timestamp: new Date() }));
 
 if (require.main === module) {
+    connectDatabase();
     app.listen(PORT, '0.0.0.0', () => {
         console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
         console.log(`📡 Rutas cargadas: Auth, Turnos, Medicamentos, Estudios, Admin`);
