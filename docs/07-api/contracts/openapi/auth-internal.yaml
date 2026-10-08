@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Salud Activa Auth Internal Contract
+  version: 2.0.0
+  description: Private service-to-service contract used by Appointments; never expose outside the Compose network.
+servers:
+  - url: http://auth-service:3001
+    description: Internal Docker Compose network
+paths:
+  /internal/users/{id}:
+    get:
+      summary: Resolve minimal user context from the owning Auth service
+      parameters:
+        - $ref: '#/components/parameters/ServiceToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Minimal user context; password hash is never returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserContext'
+        '401':
+          description: Missing or invalid service token.
+        '404':
+          description: User does not exist.
+  /internal/reservations:
+    post:
+      summary: Idempotently reserve an appointment for an existing user
+      parameters:
+        - $ref: '#/components/parameters/ServiceToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reservationId, userId]
+              properties:
+                reservationId:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: Reservation exists and is active.
+        '404':
+          description: User does not exist.
+        '409':
+          description: Reservation identifier conflicts with an existing released reservation.
+  /internal/reservations/{reservationId}:
+    delete:
+      summary: Idempotently release a reservation as saga compensation
+      parameters:
+        - $ref: '#/components/parameters/ServiceToken'
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reservation released or already absent/released.
+        '401':
+          description: Missing or invalid service token.
+components:
+  parameters:
+    ServiceToken:
+      name: x-service-token
+      in: header
+      required: true
+      schema:
+        type: string
+  schemas:
+    UserContext:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+        fcmToken:
+          type: string
+          nullable: true

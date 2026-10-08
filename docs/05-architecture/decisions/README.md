@@ -20,6 +20,7 @@ ADRs document important architectural decisions. Each file = one decision.
 
 | # | Title | Status | Date |
 |---|-------|--------|------|
-| None yet | — | — | — |
+| ADR-004 | One MongoDB instance with a database per domain (Anexo J) | Accepted | 2026-09-29 |
+| ADR-005 | Local Compose runtime, service contracts, saga/outbox and graceful degradation | Accepted | 2026-10-08 |
 
 > Add rows here as you create ADRs in `records/`
