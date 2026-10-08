@@ -2,6 +2,8 @@
 
 This document is the definitive technical reference for the Salud Activa ecosystem, covering the Android application, Node.js backend, and AWS infrastructure.
 
+> **MVP 2 implementation note (2026-10-08):** For Auth and Appointments, the running local architecture is the independent-service Compose topology documented in [service catalog](docs/09-microservices/service-catalog.md), [contracts](docs/07-api/contracts/mvp2-contracts.md), and ADR-005. The older broad target diagrams below are not evidence of deployed AWS infrastructure; Medication, Studies, and Chat remain gateway legacy domains.
+
 ---
 
 ## 1. Architectural Decision Records (ADR)
@@ -19,8 +21,7 @@ This document is the definitive technical reference for the Salud Activa ecosyst
 ## 2. System Architecture Overview
 
 ### 2.1. Adopted Architectural Style
-**Style:** Modular Monolith / Clean Architecture.
-**Justification:** Ensures strict separation between business logic and delivery mechanisms (UI, DB, API). This allows the project to scale without rewriting core business rules.
+**Style:** Distributed modular monorepo for Auth and Appointments behind a backwards-compatible API Gateway. Those services run as independent Node.js processes, communicate over REST contracts and RabbitMQ events, and own separate logical MongoDB databases. Other domains remain in gateway legacy routes.
 
 ### 2.2. C4 Diagram — System Level (Context)
 
@@ -63,9 +64,12 @@ graph TB
 ```
 
 ### 2.4. Service Catalog
-*   **android-app:** Kotlin native app. Handles UI, local business logic, and offline-first synchronization using Room.
-*   **backend-api:** Node.js/Express service. Orchestrates Authentication, Appointments, and Records.
-*   **terraform-infra:** Infrastructure as Code for AWS (ALB, ECS, RDS).
+*   **api-gateway:** Express gateway; serves current web routes and forwards `/api/auth/*`, `/api/turnos/*`, and `/api/demo/*`.
+*   **auth-service:** Owns user records and idempotent appointment reservations.
+*   **appointments-service:** Owns turns, booking saga, and embedded outbox.
+*   **mongodb/rabbitmq:** One shared engine instance per Anexo J and durable event transport.
+*   **android-app:** Kotlin native app with Room cache and compatible REST paths.
+*   **terraform-infra:** Separate infrastructure code; the Compose MVP runtime does not imply an AWS deployment.
 
 ---
 
@@ -138,7 +142,7 @@ erDiagram
 *   **Retry with Backoff:** Used in the Android SyncWorker for transient network errors.
 
 ### 7.2. Data Consistency
-*   **Outbox Pattern:** Ensures database updates and event publications are atomic.
+*   **Outbox Pattern:** The appointment request and its event are atomically appended in one MongoDB document; relay delivery is at least once and saga processing is idempotent.
 *   **CQRS:** Segregates the write model (Commands) from the read model (Queries).
 
 ---
