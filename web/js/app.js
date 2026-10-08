@@ -199,10 +199,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fecha = document.getElementById('inputFecha').value;
                 const hora = document.getElementById('inputHora').value;
                 const motivo = document.getElementById('inputMotivo').value;
+                const pacienteNombre = getUser()?.nombre || 'Paciente';
 
                 try {
-                    await apiRequest('/turnos', 'POST', { especialidad, medico, fecha, hora, motivo });
-                    showAlert('dashAlertContainer', '¡Turno reservado con éxito!', 'success');
+                    await apiRequest('/turnos', 'POST', {
+                        especialidad,
+                        doctor: medico,
+                        pacienteNombre,
+                        fecha,
+                        hora,
+                        motivo
+                    });
+                    showAlert('dashAlertContainer', '¡Solicitud de turno recibida! La confirmación llegará en breve.', 'success');
                     formSolicitar.reset();
                     cargarDashboardHome();
                     cargarTurnos();
@@ -420,7 +428,7 @@ async function cargarTurnos() {
                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">${t.especialidad || 'Consulta'}</span>
                         <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">${t.estado || 'Confirmado'}</span>
                     </div>
-                    <h5 class="fw-bold mb-2 text-truncate">${t.medico || 'Médico Asignado'}</h5>
+                    <h5 class="fw-bold mb-2 text-truncate">${t.doctor || t.medico || 'Médico Asignado'}</h5>
                     <p class="small text-secondary mb-1"><i class="fa-regular fa-calendar me-2 text-primary"></i>${t.fecha || 'Sin fecha'}</p>
                     <p class="small text-secondary mb-3"><i class="fa-regular fa-clock me-2 text-primary"></i>${t.hora || 'Sin hora'}</p>
                     ${t.motivo ? `<p class="small text-secondary mb-3 bg-body-tertiary p-2 rounded"><strong>Motivo:</strong> ${t.motivo}</p>` : ''}

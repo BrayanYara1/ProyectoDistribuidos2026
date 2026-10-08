@@ -5,9 +5,9 @@
 
 ## Fundamental principle in microservices
 
-> **Each microservice owns its own database, instance, and volume (Regla 7.1).**
+> **Each domain owns its own database. The current Anexo J deployment uses one MongoDB instance with a separate database per domain.**
 
-No service should access another service's database directly. A shared engine with separate schemas does NOT comply with Rule 7.1. Each domain (`Auth`, `Turnos`, `Medicamentos`, `Estudios`, `Chat`) connects to its own isolated database instance (`AUTH_MONGODB_URI`, `TURNOS_MONGODB_URI`, `MEDICAMENTOS_MONGODB_URI`, `ESTUDIOS_MONGODB_URI`, `CHAT_MONGODB_URI`). For architectural details, see [ADR-004](../05-architecture/decisions/records/ADR-004-data-isolation-per-domain.md).
+No service should access another service's database directly. Per Anexo J and [ADR-004](../05-architecture/decisions/records/ADR-004-data-isolation-per-domain.md), the current deployment uses a single MongoDB engine instance and separate logical databases for `Auth`, `Turnos`, `Medicamentos`, `Estudios`, and `Chat`. Domain models bind to their assigned database, but some current API flows still read or update user records from other domain routes. Those cross-domain accesses must be removed or replaced by service contracts before claiming full database ownership or independent microservice boundaries.
 
 ---
 

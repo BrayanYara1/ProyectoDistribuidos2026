@@ -27,6 +27,7 @@ build/
 
 # Backend (Ignorar para mejorar rendimiento en Android Studio)
 backend/node_modules/
+/.env
 backend/.env
 node_modules/
 
