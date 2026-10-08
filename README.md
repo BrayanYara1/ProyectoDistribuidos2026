@@ -1,10 +1,10 @@
 # Salud Activa - Gestión de Bienestar Médico
 
 ## Descripción
-**Salud Activa** es una plataforma profesional para la gestión de turnos y bienestar médico. El proyecto incluye una aplicación móvil Android nativa moderna y un backend escalable de alto rendimiento desplegado en la nube de AWS.
+**Salud Activa** es una plataforma para la gestión de turnos y bienestar médico. El proyecto incluye una aplicación móvil Android nativa, una API Node.js y despliegue de infraestructura en AWS.
 
 ## Arquitectura del Proyecto
-El proyecto sigue principios de **Clean Architecture** y **Clean Code**:
+El cliente Android conserva una arquitectura MVVM. El backend del MVP 2 ejecuta como servicios desplegables independientes dentro del mismo repositorio; cada servicio es dueño de sus bases MongoDB lógicas conforme al Anexo J:
 
 1.  **App Android (`/app`):** 
     - **MVVM:** Separación clara entre la lógica de negocio (ViewModels) y la interfaz (Fragments).
@@ -15,10 +15,11 @@ El proyecto sigue principios de **Clean Architecture** y **Clean Code**:
     - Material Design 3 para una experiencia de usuario profesional y accesible.
 
 2.  **Backend (`/backend`):**
-    - Node.js + Express.
-    - MongoDB Atlas como base de datos de documentos.
-    - Autenticación segura mediante JSON Web Tokens (JWT).
-    - Despliegue optimizado mediante Docker.
+    - `backend/server.js`: API Gateway que mantiene las rutas existentes de web y Android y enruta auth y turnos a sus servicios.
+    - `backend/services/auth-service`: registro, login, JWT, contratos internos de usuario y reservas.
+    - `backend/services/appointments-service`: turnos, saga de reserva, outbox y consumidor/publicador RabbitMQ.
+    - `backend/services/*`: Node.js + Express; `backend/models/` conserva modelos por base de datos de dominio.
+    - MongoDB y RabbitMQ forman una instancia de cada motor en el Compose local.
 
 3.  **Infraestructura (`/terraform_aws`):**
     - Infraestructura como Código (IaC) usando Terraform.
@@ -32,9 +33,24 @@ El backend está completamente containerizado para asegurar la paridad entre ent
 
 ## Ejecución Local
 
+### Demo integrada backend + MongoDB
+
+Desde la raíz del repositorio:
+
+```powershell
+Copy-Item .env.example .env
+# Replace the example values with random local-only secrets.
+docker compose up --build -d
+docker compose ps
+```
+
+La API Gateway queda en `http://localhost:3000` (configurable mediante `BACKEND_PORT`). Para demostrar degradación y recuperación, detén el broker con `docker compose stop rabbitmq`: la API sigue viva, readiness queda degradada y las solicitudes aceptadas permanecen en el outbox. Restaura el broker con `docker compose start rabbitmq`; el outbox reenvía los eventos pendientes.
+
+La saga de reserva coordina turnos con el contrato REST de Auth. La inyección protegida de fallo (`POST /api/demo/fail-next-saga`) fuerza un error posterior a la reserva y verifica que la compensación libera la reserva y cancela el turno. Requiere `DEMO_FAILURE_TOKEN`; está desactivada por defecto fuera del Compose local.
+
 ### Backend
 1. Entra a la carpeta `backend/`.
-2. Instala las dependencias: `npm install`.
+2. Instala las dependencias: `npm ci`.
 3. Crea un archivo `.env` con las variables necesarias.
 4. Ejecuta: `npm start`.
 
