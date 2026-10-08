@@ -1,16 +1,17 @@
 {
   "name": "backend-turnos",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^6.3.4"
   },
   "dependencies": {
+    "amqplib": "^0.10.9",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

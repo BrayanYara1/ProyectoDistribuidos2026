@@ -3,6 +3,8 @@
 > **What is this?** The individual documentation for each microservice in the system.
 > This is the most active section of the repository — it is updated with every significant change.
 
+> **Implemented MVP 2 runtime:** [service-catalog.md](./service-catalog.md) is authoritative for the currently running API Gateway, Auth Service, Appointments Service, MongoDB and RabbitMQ. The older `_template` and generic service examples are guidance, not deployed components.
+
 ## Structure of each microservice
 
 Each service has its own folder in `services/` with this structure:
