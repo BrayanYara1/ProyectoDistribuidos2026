@@ -28,7 +28,7 @@ Use `hu-<id>-dev` → reviewed PR to `develop` → reviewed promotion PR to `qa`
 
 The local repo initially contained only `main`; the MVP work starts on `hu-mvp2-dev`. Do not claim a PR or environment deployment unless GitHub records it.
 
-At the release check, `origin` still had no `develop` or `qa` branches. Confirm or establish those promotion targets with repository maintainers before claiming the required reviewed PR sequence or tagging the release.
+At the start of the release work, `origin` had no `develop` or `qa` branches; both refs were initialized from the then-current `main`. No promotion PR has been merged or reviewed yet. Continue with the reviewed PR sequence before tagging the release.
 
 ## Release exit criteria
 
