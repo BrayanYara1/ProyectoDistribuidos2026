@@ -2,7 +2,7 @@
 
 Notable changes to Salud Activa are recorded here.
 
-## [Unreleased] — intended for 2.0.0
+## [2.0.0] - 2026-10-08
 
 ### Added
 
