@@ -1,0 +1,35 @@
+name: MVP 2 quality
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - qa
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install locked backend dependencies
+        working-directory: backend
+        run: npm ci
+      - name: Run unit, contract, gateway, and service tests
+        working-directory: backend
+        run: npm test
+      - name: Validate the Compose stack
+        run: docker compose config --quiet
+      - name: Build all service images
+        run: docker compose build

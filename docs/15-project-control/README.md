@@ -3,6 +3,8 @@
 > **What is this?** Project administration: risks, dependencies, unanswered questions,
 > and technical debt. The difference between a project that gets delivered and one that "keeps getting delayed".
 
+> Current MVP 2 planning evidence: see [release backlog, acceptance criteria and Scrum checklist](./mvp2-release-plan.md) and the [active risk register](./risks.md). Ceremony attendance and approval must be recorded from real team meetings; templates are not proof that a meeting occurred.
+
 ---
 
 ## What is here and how to fill it in

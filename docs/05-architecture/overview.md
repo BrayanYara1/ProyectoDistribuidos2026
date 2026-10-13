@@ -37,8 +37,9 @@ We decided to use English for all documentation and code. This includes:
 ## 2. System Architecture Overview
 
 ### Adopted Architectural Style
-**Style:** Modular Monolith / Clean Architecture.
-**Justification:** This approach ensures a strict separation between business logic and infrastructure. By using a modular monolith approach with Clean Architecture, we maintain high testability and the ability to extract features into microservices in the future without modifying core business rules.
+**Style:** Distributed modular monorepo for the MVP 2 authentication and appointments flows, with a backwards-compatible API Gateway. Auth and Appointments are independently started Node.js processes with separate logical MongoDB databases; they communicate through authenticated REST contracts and durable versioned RabbitMQ events.
+
+The gateway retains legacy routes for Medications, Studies and Chat. Those domains are not yet independent deployable services and are not claimed as such.
 
 ### C4 Diagram — System Level (Context)
 ![alt text](DiagramaContex-1.jpeg)
@@ -52,9 +53,32 @@ We decided to use English for all documentation and code. This includes:
 *   Communication: App communicates with ALB via HTTPS/JWT. ECS persists to RDS and stores documents in MongoDB. App syncs data to LocalDB.
 
 ### Service Catalog
-*   Android App: Responsible for UI, local business logic, and offline synchronization. Uses Room for local persistence. Communication via REST and FCM.
-*   Backend API: Responsible for authentication, appointment management, and PII storage. Built with Node.js/Express. Uses MongoDB and PostgreSQL.
-*   Infrastructure: Managed via Terraform for AWS resources (ECS, RDS, Load Balancers).
+*   API Gateway (`backend/server.js`): serves web assets and routes compatible `/api/auth/*` and `/api/turnos/*` paths.
+*   Auth Service (`backend/services/auth-service`): owns user identity and appointment reservation records in `SaludActiva_auth`.
+*   Appointments Service (`backend/services/appointments-service`): owns turns and embedded outbox in `SaludActiva_turnos`; coordinates bookings with an idempotent saga.
+*   MongoDB: one instance with separate domain databases as required by ADR-004. RabbitMQ transports durable events.
+*   Android App: Kotlin/MVVM client with Room local persistence.
+*   Terraform/AWS configurations are separate deployment assets; the local Compose stack is the verified MVP 2 runtime.
+
+### Distributed Booking Flow
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Gateway
+  participant Appointments
+  participant Mongo as MongoDB turnos + outbox
+  participant Rabbit as RabbitMQ
+  participant Auth
+  Client->>Gateway: POST /api/turnos (JWT)
+  Gateway->>Appointments: Forward request
+  Appointments->>Mongo: Save Pendiente + appointment.requested.v1
+  Appointments-->>Client: 202 Accepted
+  Appointments->>Rabbit: Outbox relay publishes event
+  Rabbit->>Appointments: Saga consumes event
+  Appointments->>Auth: Reserve appointment (REST contract)
+  Auth-->>Appointments: Reservation result
+  Appointments->>Mongo: Confirm or compensate and append outcome event
+```
 
 ### Architectural Principles
 *   P1 (API-First): Design API contracts before implementing service logic.

@@ -1,7 +1,9 @@
-# API Gateway
+# Salud Activa API Gateway
 
 > **Single entry point** to the system. Receives all frontend requests and routes them
-> to the corresponding microservice. It is the authoritative owner of the routing rules.
+> to the corresponding service. It is the authoritative owner of the routing rules.
+
+The implementation is `backend/server.js`, port 3000. This is a backwards-compatible gateway: it routes Auth and Appointments to independent service processes, serves the existing web UI, and keeps legacy routes for domains not yet extracted. It currently retains a MongoDB connection for those legacy endpoints.
 
 ---
 
@@ -10,43 +12,41 @@
 | Field | Value |
 |-------|-------|
 | Number in catalog | 01 |
-| Local port | 8080 |
+| Local port | 3000 |
 | Repository | [Service repo URL] |
-| DB engine | — (stateless, no own DB) |
-| Communicates with | auth-service, [other services] |
+| DB engine | MongoDB connection used only for legacy domains |
+| Communicates with | auth-service, appointments-service |
 | Consumed by | Web frontend, mobile app, third-party tools |
 
 ---
 
 ## Responsibilities (what this service DOES)
 
-- Route HTTP requests to the correct microservice based on the path (`/api/v1/auth/*`, `/api/v1/[resource]/*`)
-- Verify that the JWT token is valid before forwarding the request (delegating to auth-service)
-- Attach user context (`X-User-Id`, `X-User-Role`) as internal headers
-- Global rate limiting: maximum [100] requests per IP per minute
-- Unified access logs with correlationId
+- Route `/api/auth/*` to Auth and `/api/turnos/*` plus `/api/demo/*` to Appointments.
+- Preserve existing Android/web request paths and apply global rate limiting.
+- Report liveness separately from readiness and downstream service health.
 
 ## Out of scope (what it does NOT do)
 
 - **Does not handle business logic** — only routes
 - **Does not verify resource permissions** — only verifies the JWT is valid (authorization is done by each service)
-- **Does not store data** — stateless
+- **Does not own auth/appointment data** — those databases belong to their respective services.
 
 ---
 
 ## How to run it locally
 
 ```bash
-# From the project root (starts all services)
-docker compose up -d api-gateway
+# From the project root
+docker compose up --build -d
 
 # Verify it is working
-curl http://localhost:8080/health
+curl http://localhost:3000/health/live
 ```
 
 **Expected response:**
 ```json
-{ "status": "ok", "timestamp": "2024-01-15T10:30:00Z" }
+{ "status": "alive", "timestamp": "..." }
 ```
 
 ---
@@ -57,7 +57,7 @@ curl http://localhost:8080/health
 - [events.md](./events.md) — Not applicable (does not emit domain events)
 - [decisions.md](./decisions.md) — Gateway design decisions
 - [runbook.md](./runbook.md) — Operation in production
-- [API Contract](../../../07-api/contracts/openapi/api-gateway.yaml)
+- [MVP 2 service contracts](../../../07-api/contracts/mvp2-contracts.md)
 
 ---
 
@@ -74,8 +74,9 @@ Relevant decisions include:
 ## Routing pattern
 
 ```
-Client → :8080/api/v1/auth/*        → auth-service :8081
-Client → :8080/api/v1/[resource]/*  → [name]-service :808N
+Client → :3000/api/auth/*   → auth-service :3001
+Client → :3000/api/turnos/* → appointments-service :3002
+Client → :3000/[legacy]     → existing gateway routes
 ```
 
-Routing configuration: `[path to gateway configuration file]`
+Routing configuration: `backend/server.js`; local runtime: root `docker-compose.yml`.

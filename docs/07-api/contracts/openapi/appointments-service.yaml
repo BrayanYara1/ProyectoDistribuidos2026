@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: Salud Activa Appointments API
+  version: 2.0.0
+  description: Backwards-compatible appointments API served through the API Gateway.
+servers:
+  - url: http://localhost:3000
+    description: Local Docker Compose gateway
+paths:
+  /api/turnos:
+    get:
+      summary: List the authenticated user's appointments
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User-owned appointments.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        '401':
+          description: Missing or invalid authentication.
+        '503':
+          description: Auth or appointment persistence is unavailable.
+    post:
+      summary: Request an appointment and start its asynchronous saga
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+      responses:
+        '202':
+          description: Request persisted to the appointments outbox; saga is pending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '400':
+          description: Missing date or time.
+        '409':
+          description: The active time slot is already reserved.
+  /api/turnos/check-availability:
+    get:
+      summary: Check whether a date and time have an active appointment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fecha
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: hora
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Slot availability.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [disponible]
+                properties:
+                  disponible:
+                    type: boolean
+        '400':
+          description: Missing date or time.
+  /api/turnos/{id}:
+    delete:
+      summary: Cancel an appointment owned by the authenticated user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cancelled and outcome event persisted to the outbox.
+        '404':
+          description: Appointment not found for this user.
+        '503':
+          description: Cancellation or Auth compensation could not complete.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AppointmentRequest:
+      type: object
+      required: [fecha, hora]
+      properties:
+        fecha:
+          type: string
+          example: '2026-10-30'
+        hora:
+          type: string
+          example: '09:00'
+        pacienteNombre:
+          type: string
+        nombre:
+          type: string
+          description: Legacy Android client alias for pacienteNombre.
+        doctor:
+          type: string
+        medico:
+          type: string
+          description: Legacy web client alias for doctor.
+        especialidad:
+          type: string
+        motivo:
+          type: string
+    Appointment:
+      type: object
+      required: [_id, usuarioId, fecha, hora, estado, sagaStatus]
+      properties:
+        _id:
+          type: string
+        usuarioId:
+          type: string
+        pacienteNombre:
+          type: string
+        doctor:
+          type: string
+        especialidad:
+          type: string
+        fecha:
+          type: string
+        hora:
+          type: string
+        estado:
+          type: string
+          enum: [Pendiente, Confirmado, Cancelado]
+        sagaStatus:
+          type: string
+          enum: [PENDING, COMPLETED, COMPENSATED]

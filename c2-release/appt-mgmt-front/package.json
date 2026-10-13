@@ -1,0 +1,16 @@
+{
+  "name": "appt-mgmt-front",
+  "version": "2.0.0",
+  "description": "Frontend Web Dashboard for Medical Appointment Management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/front.test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

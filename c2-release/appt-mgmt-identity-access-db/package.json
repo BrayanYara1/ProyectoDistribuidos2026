@@ -1,0 +1,11 @@
+{
+  "name": "appt-mgmt-identity-access-db",
+  "version": "2.0.0",
+  "description": "PostgreSQL Database for Identity & Access Management (IAM)",
+  "scripts": {
+    "test": "node --test tests/db-iam-schema.test.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

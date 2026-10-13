@@ -2,6 +2,8 @@
 
 This document serves as the master technical reference for the **Salud Activa** ecosystem, encompassing the Android application, Node.js backend, and AWS infrastructure.
 
+> **Current MVP 2 topology:** Auth and Appointments run as separate Compose services behind the existing Express gateway; MongoDB stores one logical database per domain and RabbitMQ carries versioned saga events. See [the service catalog](docs/09-microservices/service-catalog.md), [MVP 2 contracts](docs/07-api/contracts/mvp2-contracts.md), and ADR-005. Historical AWS diagrams below describe infrastructure intent, not a verified cloud deployment.
+
 ---
 
 ## 1. Architectural Decision Record: ADR-001
@@ -33,8 +35,7 @@ The software industry standard—Stack Overflow, library documentation, technica
 ## 2. System Architecture Overview
 
 ### 2.1. Adopted Architectural Style
-**Style:** Modular Monolith / Clean Architecture.
-**Justification:** This approach ensures a strict separation between business logic and infrastructure. By using a modular monolith approach with Clean Architecture, we maintain high testability and the ability to extract features into microservices in the future without modifying core business rules.
+**Style:** Distributed modular monorepo for Auth and Appointments, with the existing API Gateway retained for backwards-compatible clients and legacy domains.
 
 ### 2.2. C4 Diagram — System Level (Context)
 
@@ -91,9 +92,11 @@ graph TB
 ```
 
 ### 2.4. Service Catalog
-*   **Android App:** Responsible for UI, local business logic, and offline synchronization. Uses Room for local persistence.
-*   **Backend API:** Responsible for authentication, appointment management, and PII storage. Built with Node.js/Express.
-*   **Infrastructure:** Infrastructure as Code (IaC) using Terraform for AWS resources (ECS, RDS, Load Balancers).
+*   **API Gateway:** Express gateway that preserves client routes and forwards Auth and Appointments paths.
+*   **Auth Service:** Owns users and appointment reservations in its logical MongoDB database.
+*   **Appointments Service:** Owns turns, saga, and outbox in its logical MongoDB database.
+*   **Android App:** Kotlin client with Room local persistence and backwards-compatible REST calls.
+*   **Infrastructure:** Terraform/AWS assets are separate; the Compose MVP runtime does not imply a cloud deployment.
 
 ### 2.5. Architectural Principles
 *   **P1 (API-First):** Design API contracts (OpenAPI) before implementation.

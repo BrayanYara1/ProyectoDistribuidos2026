@@ -1,0 +1,11 @@
+{
+  "name": "appt-mgmt-appointment-db",
+  "version": "2.0.0",
+  "description": "PostgreSQL database and relational schemas for Appointment microservice",
+  "scripts": {
+    "test": "node --test tests/db-schema.test.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
