@@ -7,7 +7,7 @@ class AuthController {
     try {
       const { email, password } = req.body;
       if (!email || !password) {
-        return res.status(400).json({ error: 'Email y contraseña requeridos' });
+        return res.status(400).json({ error: 'Email and password required' });
       }
       const result = this.authenticateUserUseCase.execute(email, password);
       return res.status(200).json(result);

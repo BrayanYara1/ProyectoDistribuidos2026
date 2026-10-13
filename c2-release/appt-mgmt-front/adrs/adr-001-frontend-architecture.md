@@ -1,15 +1,15 @@
-# ADR 001: Arquitectura Frontend Ligera y Desacoplada
+# ADR 001: Lightweight and Decoupled Frontend Architecture
 
-- **Estatus**: Aprobado
-- **Fecha**: 2026-03-29
-- **Autores**: Equipo de Arquitectura de Sistemas Distribuidos
+- **Status**: Approved
+- **Date**: 2026-03-29
+- **Authors**: Distributed Systems Architecture Team
 
-## Contexto
-Se requiere un panel web liviano, de rápido despliegue y sin sobrecarga de build tools pesadas para interactuar con la API Gateway del sistema.
+## Context
+A lightweight web dashboard with fast deployment and zero heavy build tooling overhead is required to interact with the system API Gateway.
 
-## Decisión
-Usar Vanilla HTML5/CSS3/JavaScript modular con una capa de abstracción cliente API (`apiClient.js`) y un contenedor Nginx para servir archivos estáticos eficientemente.
+## Decision
+Use Vanilla HTML5/CSS3/Modular JavaScript with an API client abstraction layer (`apiClient.js`) and an Nginx container to serve static assets efficiently.
 
-## Consecuencias
-- **Positivas**: Carga ultra rápida, compatibilidad universal, costo cero de bundling.
-- **Negativas**: Mayor responsabilidad manual en el manejo del estado en el cliente.
+## Consequences
+- **Positive**: Ultra-fast load times, universal compatibility, zero bundling overhead.
+- **Negative**: Higher manual responsibility for state management on the client.

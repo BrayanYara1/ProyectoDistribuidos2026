@@ -4,32 +4,32 @@ const User = require('../src/domain/User');
 const JwtTokenService = require('../src/services/JwtTokenService');
 const AuthenticateUserUseCase = require('../src/usecases/AuthenticateUserUseCase');
 
-describe('IAM API - Pruebas TDD de Dominio y Autenticación', () => {
-  test('Debe crear Entidad User respetando validaciones de contraseña', () => {
+describe('IAM API - Domain and Authentication TDD Tests', () => {
+  test('Should create User entity respecting password validation', () => {
     const user = new User({ email: 'test@example.com', passwordHash: 'secret' });
     assert.strictEqual(user.email, 'test@example.com');
     assert.strictEqual(user.role, 'PATIENT');
   });
 
-  test('AuthenticateUserUseCase debe retornar token JWT para credenciales válidas', () => {
+  test('AuthenticateUserUseCase should return JWT token for valid credentials', () => {
     const usersMap = new Map();
-    const demoUser = new User({ id: 'usr-1', email: 'medico@hospital.com', passwordHash: '123456', role: 'DOCTOR' });
+    const demoUser = new User({ id: 'usr-1', email: 'doctor@hospital.com', passwordHash: '123456', role: 'DOCTOR' });
     usersMap.set(demoUser.email, demoUser);
     const tokenService = new JwtTokenService();
     const useCase = new AuthenticateUserUseCase(usersMap, tokenService);
 
-    const result = useCase.execute('medico@hospital.com', '123456');
+    const result = useCase.execute('doctor@hospital.com', '123456');
     assert.ok(result.token);
-    assert.strictEqual(result.user.email, 'medico@hospital.com');
+    assert.strictEqual(result.user.email, 'doctor@hospital.com');
   });
 
-  test('AuthenticateUserUseCase debe lanzar excepción para credenciales incorrectas', () => {
+  test('AuthenticateUserUseCase should throw exception for invalid credentials', () => {
     const usersMap = new Map();
     const tokenService = new JwtTokenService();
     const useCase = new AuthenticateUserUseCase(usersMap, tokenService);
 
     assert.throws(() => {
-      useCase.execute('medico@hospital.com', 'badpassword');
-    }, /Credenciales inválidas/);
+      useCase.execute('doctor@hospital.com', 'badpassword');
+    }, /Invalid credentials/);
   });
 });

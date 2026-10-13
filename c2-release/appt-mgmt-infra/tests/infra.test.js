@@ -3,8 +3,8 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-describe('Infraestructura - Pruebas de Sintaxis y Configuración', () => {
-  test('Debe existir el archivo docker-compose.yml y ser válido', () => {
+describe('Infrastructure - Syntax and Configuration Tests', () => {
+  test('docker-compose.yml must exist and be valid', () => {
     const composePath = path.join(__dirname, '../docker-compose.yml');
     assert.strictEqual(fs.existsSync(composePath), true);
     const content = fs.readFileSync(composePath, 'utf8');
@@ -14,7 +14,7 @@ describe('Infraestructura - Pruebas de Sintaxis y Configuración', () => {
     assert.ok(content.includes('api-gateway'));
   });
 
-  test('Debe existir la configuración de Terraform AWS', () => {
+  test('AWS Terraform configuration must exist', () => {
     const mainTfPath = path.join(__dirname, '../terraform/main.tf');
     assert.strictEqual(fs.existsSync(mainTfPath), true);
     const content = fs.readFileSync(mainTfPath, 'utf8');

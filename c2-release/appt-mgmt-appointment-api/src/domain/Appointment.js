@@ -1,7 +1,7 @@
 class Appointment {
-  constructor({ id, patientId, doctorId, specialty, date, status = 'SOLICITADO' }) {
+  constructor({ id, patientId, doctorId, specialty, date, status = 'REQUESTED' }) {
     if (!patientId || !doctorId || !date) {
-      throw new Error('Datos requeridos de cita incompletos');
+      throw new Error('Incomplete appointment required data');
     }
     this.id = id || `appt-${Date.now()}`;
     this.patientId = patientId;

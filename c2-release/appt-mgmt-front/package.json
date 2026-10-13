@@ -1,11 +1,11 @@
 {
   "name": "appt-mgmt-front",
   "version": "2.0.0",
-  "description": "Panel Web Frontend de Gestión de Citas Médicas",
+  "description": "Frontend Web Dashboard for Medical Appointment Management",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest tests/"
+    "test": "node --test tests/front.test.js"
   },
   "dependencies": {
     "express": "^4.18.2"

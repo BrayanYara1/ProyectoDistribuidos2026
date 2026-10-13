@@ -2,14 +2,14 @@ const { describe, test } = require('node:test');
 const assert = require('node:assert');
 const createGatewayApp = require('../src/routes');
 
-describe('API Gateway - Pruebas de Integración y Enrutamiento', () => {
+describe('API Gateway - Integration and Routing Tests', () => {
   const app = createGatewayApp();
 
-  test('Gateway App debe ser un handler de Express', () => {
+  test('Gateway App must be an Express handler', () => {
     assert.ok(typeof app === 'function');
   });
 
-  test('Middleware de authForwarder debe establecer header x-forwarded-auth', () => {
+  test('authForwarder middleware must set x-forwarded-auth header', () => {
     const authForwarder = require('../src/middleware/authForwarder');
     const req = { headers: { 'authorization': 'Bearer token123' } };
     const res = {};
@@ -19,7 +19,7 @@ describe('API Gateway - Pruebas de Integración y Enrutamiento', () => {
     assert.strictEqual(req.headers['x-forwarded-auth'], 'Bearer token123');
   });
 
-  test('Rate Limiter debe permitir peticiones dentro del límite', () => {
+  test('Rate Limiter must allow requests within limit', () => {
     const rateLimiter = require('../src/middleware/rateLimiter');
     const middleware = rateLimiter(5, 60000);
     const req = { ip: '127.0.0.1' };

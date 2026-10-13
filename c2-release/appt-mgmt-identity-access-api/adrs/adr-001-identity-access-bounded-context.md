@@ -1,15 +1,15 @@
-# ADR 001: Bounded Context de Identidad y Autenticación Basada en Tokens JWT
+# ADR 001: Identity Bounded Context and JWT Token Authentication
 
-- **Estatus**: Aprobado
-- **Fecha**: 2026-03-29
-- **Autores**: Equipo de Arquitectura de Sistemas Distribuidos
+- **Status**: Approved
+- **Date**: 2026-03-29
+- **Authors**: Distributed Systems Architecture Team
 
-## Contexto
-El sistema requiere autenticación segura, rápida y sin estado (stateless) para atender peticiones tanto del Frontend Web como de las Aplicaciones Móviles Android.
+## Context
+The system requires secure, fast, stateless authentication to handle requests from both Web Frontend and Android Mobile Applications.
 
-## Decisión
-Aislar el Bounded Context de Identidad y Accesos en `appt-mgmt-identity-access-api` emitiendo tokens firmados JWT con expiración controlada para autorizar peticiones hacia otros microservicios.
+## Decision
+Isolate the Identity and Access Bounded Context in `appt-mgmt-identity-access-api` issuing signed JWT tokens with expiration control to authorize downstream microservice requests.
 
-## Consecuencias
-- **Positivas**: Desacoplamiento total de la gestión de contraseñas y alta escalabilidad horizontal.
-- **Negativas**: Necesidad de revocación activa de tokens si un rol cambia antes de la expiración.
+## Consequences
+- **Positive**: Total decoupling of credential management and high horizontal scalability.
+- **Negative**: Need for active token revocation if roles change prior to token expiration.

@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 const usersMap = new Map();
-const demoUser = new User({ id: 'usr-1', email: 'medico@hospital.com', passwordHash: '123456', role: 'DOCTOR', name: 'Dr. López' });
+const demoUser = new User({ id: 'usr-1', email: 'doctor@hospital.com', passwordHash: '123456', role: 'DOCTOR', name: 'Dr. Lopez' });
 usersMap.set(demoUser.email, demoUser);
 
 const tokenService = new JwtTokenService();
@@ -24,7 +24,7 @@ app.post('/api/v1/iam/login', (req, res) => controller.login(req, res));
 const PORT = process.env.PORT || 3001;
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`IAM API corriendo en puerto ${PORT}`);
+    console.log(`IAM API running on port ${PORT}`);
   });
 }
 

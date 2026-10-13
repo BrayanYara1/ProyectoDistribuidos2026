@@ -16,7 +16,7 @@ function rateLimiter(limit = 100, windowMs = 60000) {
     requestCounts.set(ip, clientData);
 
     if (clientData.count > limit) {
-      return res.status(429).json({ error: 'Demasiadas peticiones. Intente más tarde.' });
+      return res.status(429).json({ error: 'Too many requests. Please try again later.' });
     }
 
     next();

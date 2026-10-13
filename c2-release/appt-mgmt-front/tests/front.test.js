@@ -4,15 +4,15 @@ const fs = require('fs');
 const path = require('path');
 const ApiClient = require('../public/js/apiClient');
 
-describe('Frontend - Pruebas Estructurales y de Cliente API', () => {
-  test('Debe existir index.html con formulario de inicio de sesión', () => {
+describe('Frontend - Structural and API Client Tests', () => {
+  test('index.html must exist and contain login form', () => {
     const indexPath = path.join(__dirname, '../public/index.html');
     assert.strictEqual(fs.existsSync(indexPath), true);
     const content = fs.readFileSync(indexPath, 'utf8');
     assert.ok(content.includes('id="loginForm"'));
   });
 
-  test('ApiClient debe instanciarse con URL base por defecto', () => {
+  test('ApiClient must instantiate with default base URL', () => {
     const client = new ApiClient();
     assert.strictEqual(client.baseUrl, 'http://localhost:8080');
   });

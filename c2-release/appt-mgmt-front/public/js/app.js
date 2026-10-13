@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      alert('Iniciando sesión...');
+      alert('Logging in...');
       window.location.href = 'dashboard.html';
     });
   }

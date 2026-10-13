@@ -3,8 +3,8 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-describe('Base de Datos IAM - Pruebas de Esquema SQL', () => {
-  test('Debe existir init.sql y contener tabla users', () => {
+describe('IAM Database - SQL Schema Tests', () => {
+  test('init.sql must exist and contain users table definition', () => {
     const sqlPath = path.join(__dirname, '../init.sql');
     assert.strictEqual(fs.existsSync(sqlPath), true);
     const content = fs.readFileSync(sqlPath, 'utf8');
@@ -13,10 +13,10 @@ describe('Base de Datos IAM - Pruebas de Esquema SQL', () => {
     assert.ok(content.includes('email'));
   });
 
-  test('Debe existir seed.sql con usuario inicial de prueba', () => {
+  test('seed.sql must exist with initial test user', () => {
     const seedPath = path.join(__dirname, '../seed.sql');
     assert.strictEqual(fs.existsSync(seedPath), true);
     const content = fs.readFileSync(seedPath, 'utf8');
-    assert.ok(content.includes('medico@hospital.com'));
+    assert.ok(content.includes('doctor@hospital.com'));
   });
 });

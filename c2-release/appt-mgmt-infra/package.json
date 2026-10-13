@@ -1,10 +1,10 @@
 {
   "name": "appt-mgmt-infra",
   "version": "2.0.0",
-  "description": "Infraestructura como código (IaC) y orquestación Docker Compose para Gestión de Citas Médicas",
+  "description": "Infrastructure as Code (IaC) and Docker Compose orchestration for Appointment Management System",
   "main": "index.js",
   "scripts": {
-    "test": "jest tests/"
+    "test": "node --test tests/infra.test.js"
   },
   "devDependencies": {
     "jest": "^29.7.0"

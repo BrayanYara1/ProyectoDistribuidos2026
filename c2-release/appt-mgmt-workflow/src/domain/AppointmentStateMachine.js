@@ -1,17 +1,17 @@
 const STATES = {
-  SOLICITADO: 'SOLICITADO',
-  CONFIRMADO: 'CONFIRMADO',
-  EN_PROCESO: 'EN_PROCESO',
-  FINALIZADO: 'FINALIZADO',
-  CANCELADO: 'CANCELADO'
+  REQUESTED: 'REQUESTED',
+  CONFIRMED: 'CONFIRMED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
 };
 
 const ALLOWED_TRANSITIONS = {
-  [STATES.SOLICITADO]: [STATES.CONFIRMADO, STATES.CANCELADO],
-  [STATES.CONFIRMADO]: [STATES.EN_PROCESO, STATES.CANCELADO],
-  [STATES.EN_PROCESO]: [STATES.FINALIZADO, STATES.CANCELADO],
-  [STATES.FINALIZADO]: [],
-  [STATES.CANCELADO]: []
+  [STATES.REQUESTED]: [STATES.CONFIRMED, STATES.CANCELLED],
+  [STATES.CONFIRMED]: [STATES.IN_PROGRESS, STATES.CANCELLED],
+  [STATES.IN_PROGRESS]: [STATES.COMPLETED, STATES.CANCELLED],
+  [STATES.COMPLETED]: [],
+  [STATES.CANCELLED]: []
 };
 
 class AppointmentStateMachine {
@@ -25,7 +25,7 @@ class AppointmentStateMachine {
 
   static transition(appointment, nextStatus) {
     if (!this.canTransition(appointment.status, nextStatus)) {
-      throw new Error(`Transición inválida de ${appointment.status} a ${nextStatus}`);
+      throw new Error(`Invalid transition from ${appointment.status} to ${nextStatus}`);
     }
     return {
       ...appointment,

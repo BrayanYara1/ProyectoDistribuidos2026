@@ -1,11 +1,11 @@
 {
   "name": "appt-mgmt-appointment-api",
   "version": "2.0.0",
-  "description": "Microservicio REST API de gestión de citas médicas (Domain-Driven Design / Clean Architecture)",
+  "description": "Medical Appointment REST API Microservice (Domain-Driven Design / Clean Architecture)",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest tests/"
+    "test": "node --test tests/appointment-api.test.js"
   },
   "dependencies": {
     "express": "^4.18.2"

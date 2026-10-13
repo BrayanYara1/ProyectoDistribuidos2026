@@ -1,15 +1,15 @@
-# ADR 001: Esquema de Almacenamiento Relacional RBAC para IAM
+# ADR 001: Relational RBAC Storage Schema for IAM
 
-- **Estatus**: Aprobado
-- **Fecha**: 2026-03-29
-- **Autores**: Equipo de Arquitectura de Sistemas Distribuidos
+- **Status**: Approved
+- **Date**: 2026-03-29
+- **Authors**: Distributed Systems Architecture Team
 
-## Contexto
-Se debe garantizar que los datos de autenticación estén aislados físicamente o lógicamente de la base de datos de citas de negocio para cumplir con principios de seguridad y DDD.
+## Context
+Authentication data must be physically or logically isolated from business appointment databases to meet security principles and DDD guidelines.
 
-## Decisión
-Desplegar una base de datos PostgreSQL separada (`iam_db`) dedicada únicamente al registro de usuarios, hashes de contraseñas y permisos RBAC.
+## Decision
+Deploy a separate PostgreSQL database (`iam_db`) dedicated solely to user records, password hashes, and RBAC permissions.
 
-## Consecuencias
-- **Positivas**: Máxima privacidad y aislamiento de datos sensibles. Cumplimiento de normativas de seguridad.
-- **Negativas**: Necesidad de gestionar dos motores o bases de datos relacionales independientes.
+## Consequences
+- **Positive**: Maximum privacy and sensitive data isolation. Compliance with security standards.
+- **Negative**: Need to manage two independent relational database instances.

@@ -10,9 +10,9 @@ class LoginViewModelTest {
     @Test
     fun login_withValidCredentials_returnsUserCredentials() {
         val viewModel = LoginViewModel()
-        val credentials = viewModel.login("medico@hospital.com", "123456")
+        val credentials = viewModel.login("doctor@hospital.com", "123456")
         assertNotNull(credentials)
-        assertEquals("medico@hospital.com", credentials.email)
+        assertEquals("doctor@hospital.com", credentials.email)
         assertEquals("DOCTOR", credentials.role)
     }
 

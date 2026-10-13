@@ -13,7 +13,7 @@ app.post('/api/v1/workflow/transition', (req, res) => {
   try {
     const { appointment, targetStatus } = req.body;
     if (!appointment || !targetStatus) {
-      return res.status(400).json({ error: 'Faltan datos requeridos' });
+      return res.status(400).json({ error: 'Missing required request parameters' });
     }
     const result = engine.processTransition(appointment, targetStatus);
     return res.status(200).json(result);
@@ -25,7 +25,7 @@ app.post('/api/v1/workflow/transition', (req, res) => {
 const PORT = process.env.PORT || 3003;
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`Workflow Service corriendo en puerto ${PORT}`);
+    console.log(`Workflow Service running on port ${PORT}`);
   });
 }
 

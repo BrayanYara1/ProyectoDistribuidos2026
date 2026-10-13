@@ -1,9 +1,9 @@
 {
   "name": "appt-mgmt-identity-access-db",
   "version": "2.0.0",
-  "description": "Base de datos PostgreSQL para el microservicio de Identidad, Autenticación y Accesos (IAM)",
+  "description": "PostgreSQL Database for Identity & Access Management (IAM)",
   "scripts": {
-    "test": "jest tests/"
+    "test": "node --test tests/db-iam-schema.test.js"
   },
   "devDependencies": {
     "jest": "^29.7.0"

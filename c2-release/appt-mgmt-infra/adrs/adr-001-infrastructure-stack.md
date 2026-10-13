@@ -1,17 +1,17 @@
-# ADR 001: Selección de Stack de Infraestructura y Orquestación
+# ADR 001: Infrastructure Stack and Orchestration Selection
 
-- **Estatus**: Aprobado
-- **Fecha**: 2026-03-29
-- **Autores**: Equipo de Arquitectura de Sistemas Distribuidos
+- **Status**: Approved
+- **Date**: 2026-03-29
+- **Authors**: Distributed Systems Architecture Team
 
-## Contexto
-El sistema de gestión de citas médicas requiere una infraestructura elástica, altamente disponible y fácil de orquestar tanto en entornos locales de desarrollo como en entornos de nube (AWS).
+## Context
+The appointment management system requires an elastic, highly available infrastructure that is easy to orchestrate in both local development and cloud environments (AWS).
 
-## Decisión
-Se decide adoptar:
-1. **Terraform**: Como herramienta declarativa de Infraestructura como Código (IaC) para provisión de recursos AWS (VPC, ECS, RDS PostgreSQL).
-2. **Docker Compose**: Para orquestar contenedores locales que reflejan la topología distribuida de los 10 servicios.
+## Decision
+Adopt:
+1. **Terraform**: As a declarative Infrastructure as Code (IaC) tool for provisioning AWS resources (VPC, ECS, RDS PostgreSQL).
+2. **Docker Compose**: To orchestrate local containers reflecting the distributed topology of all 10 services.
 
-## Consecuencias
-- **Positivas**: Reproducibilidad total entre ambientes, despliegues automatizables y desacoplamiento de infraestructura.
-- **Negativas**: Necesidad de mantener actualizados los manifiestos de Terraform a la par de los cambios en componentes de AWS.
+## Consequences
+- **Positive**: Total reproducibility across environments, automated deployments, and infrastructure decoupling.
+- **Negative**: Need to maintain updated Terraform manifests alongside AWS component updates.

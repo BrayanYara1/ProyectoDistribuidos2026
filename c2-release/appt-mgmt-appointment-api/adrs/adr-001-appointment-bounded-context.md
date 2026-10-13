@@ -1,15 +1,15 @@
-# ADR 001: Bounded Context de Citas y Arquitectura Hexagonal
+# ADR 001: Appointment Bounded Context and Hexagonal Architecture
 
-- **Estatus**: Aprobado
-- **Fecha**: 2026-03-29
-- **Autores**: Equipo de Arquitectura de Sistemas Distribuidos
+- **Status**: Approved
+- **Date**: 2026-03-29
+- **Authors**: Distributed Systems Architecture Team
 
-## Contexto
-La gestión de citas médicas involucra reglas de dominio específicas (validación de horarios, asociación paciente-médico, especialidades) que deben mantenerse aisladas de otros dominios como autenticación.
+## Context
+Medical appointment management involves specific domain rules (schedule validation, patient-doctor mapping, specialties) that must remain isolated from other domains such as authentication.
 
-## Decisión
-Definir un Bounded Context independiente (`appt-mgmt-appointment-api`) utilizando arquitectura hexagonal para aislar el modelo de dominio (`Appointment`) de los detalles de infraestructura.
+## Decision
+Define an independent Bounded Context (`appt-mgmt-appointment-api`) using hexagonal architecture to isolate the domain model (`Appointment`) from infrastructure details.
 
-## Consecuencias
-- **Positivas**: Alta mantenibilidad, independencia de persistencia y facilidad para ejecutar pruebas TDD en aislamiento.
-- **Negativas**: Necesidad de mantener DTOs de mapeo entre capas.
+## Consequences
+- **Positive**: High maintainability, persistence independence, and easy isolated TDD test execution.
+- **Negative**: Need to maintain mapping DTOs between layers.

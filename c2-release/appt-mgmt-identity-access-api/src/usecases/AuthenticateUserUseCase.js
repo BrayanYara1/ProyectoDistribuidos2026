@@ -7,7 +7,7 @@ class AuthenticateUserUseCase {
   execute(email, password) {
     const user = this.usersMap.get(email);
     if (!user || user.passwordHash !== password) {
-      throw new Error('Credenciales inválidas');
+      throw new Error('Invalid credentials');
     }
     const token = this.tokenService.generateToken(user);
     return {

@@ -5,7 +5,7 @@ import com.gestionturnos.iam.domain.model.UserCredentials
 class LoginUseCase {
     fun execute(email: String, password: String): UserCredentials {
         if (email.isBlank() || password.isBlank()) {
-            throw IllegalArgumentException("Email y contraseña obligatorios")
+            throw IllegalArgumentException("Email and password required")
         }
         return UserCredentials(
             email = email,

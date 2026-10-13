@@ -1,15 +1,15 @@
-# ADR 001: Módulo de Autenticación e Identidad en Android
+# ADR 001: Authentication and Identity Module on Android
 
-- **Estatus**: Aprobado
-- **Fecha**: 2026-03-29
-- **Autores**: Equipo de Desarrollo Android
+- **Status**: Approved
+- **Date**: 2026-03-29
+- **Authors**: Android Development Team
 
-## Contexto
-El flujo de autenticación debe estar aislado para permitir reutilización en diferentes aplicaciones móviles del ecosistema de salud.
+## Context
+The authentication flow must be isolated to allow reusability across different mobile applications in the health ecosystem.
 
-## Decisión
-Desarrollar el módulo Android de biblioteca `appt-mgmt-identity-access-app` que maneja el ciclo de vida de autenticación del usuario mediante MVVM y Kotlin Coroutines.
+## Decision
+Develop the `appt-mgmt-identity-access-app` Android library module handling user authentication lifecycle using MVVM and Kotlin Coroutines.
 
-## Consecuencias
-- **Positivas**: Reutilización segura del componente de login y fácil mantenimiento.
-- **Negativas**: Necesidad de coordinar contratos de tokens con la capa de API.
+## Consequences
+- **Positive**: Secure reusability of the login component and easy maintenance.
+- **Negative**: Need to coordinate token contracts with the API layer.
